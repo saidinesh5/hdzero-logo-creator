@@ -47,6 +47,7 @@ class Base_gui_class {
 
 		//common image dimensions
 		this.common_dimensions = [
+			[480, 240, 'HDZero Logo'],
 			[640, 480, '480p'],
 			[800, 600, 'SVGA'],
 			[1024, 768, 'XGA'],
