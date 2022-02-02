@@ -41,6 +41,7 @@ class File_save_class {
 			GIF: "Graphics Interchange Format",
 			BMP: "Windows Bitmap",
 			TIFF: "Tag Image File Format",
+			HDZERO_LOGO: "HDZero Logo (RGB24 data)"
 		};
 
 		this.default_extension = 'PNG';
@@ -618,6 +619,23 @@ class File_save_class {
 				filesaver.saveAs(blob, fname);
 			});
 		}
+		else if (type == 'HDZERO_LOGO') {
+			const imageData = ctx.getImageData(0, 0, 480, 240); // HDZero requires speicifc dimensions
+			const rgb24 = new Uint8Array((imageData.data.length / 4) * 3);
+
+			var i = 0;
+			var j = 0;
+			while( i < imageData.data.length){
+				rgb24[j++] = imageData.data[i++];
+				rgb24[j++] = imageData.data[i++];
+				rgb24[j++] = imageData.data[i++];
+				i++;
+			}
+
+			var blob = new Blob([rgb24], {type: 'application/octet-stream'})
+
+			filesaver.saveAs(blob, 'LOGO.ME')
+        }
 	}
 	
 	fillCanvasBackground(ctx, color, width = config.WIDTH, height = config.HEIGHT) {
