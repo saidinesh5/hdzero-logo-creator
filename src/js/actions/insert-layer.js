@@ -84,7 +84,47 @@ export class Insert_layer_action extends Base_action {
 			}
 
 			if (layer.link == null) {
-				if (typeof layer.data == 'object') {
+				if (layer.name == 'LOGO.ME') {
+					const w = 480;
+					const h = 240;
+					const n = w * h;
+
+					let tmpCanvas = document.createElement('canvas');
+					let tmpCanvasCtx = tmpCanvas.getContext('2d');
+					let imgData = tmpCanvasCtx.createImageData(w, h);
+
+					tmpCanvas.width = w;
+					tmpCanvas.height = h;
+
+					for (let i = 0; i < n; i++) {
+						const sourceIndex = 3*i;
+						const destinationIndex = 4*i;
+						imgData.data[destinationIndex] = layer.data[sourceIndex];
+						imgData.data[destinationIndex + 1] = layer.data[sourceIndex + 1];
+						imgData.data[destinationIndex + 2] = layer.data[sourceIndex + 2];
+						imgData.data[destinationIndex + 3] = 255;
+					}
+
+					tmpCanvasCtx.putImageData(imgData, 0, 0);
+
+					layer.link = new Image();
+					layer.link.src = tmpCanvas.toDataURL();
+
+					layer.link.onload = () => {
+						layer.width = w;
+						layer.width_original = w;
+						layer.height = h;
+						layer.height_original = h;
+						layer.data = null;
+						autoresize_as = [layer.width, layer.height, layer.id, this.can_automate, true];
+						config.need_render =true;
+					}
+					layer.link.onerror = (error) => {
+						resolve(error);
+						alertify.error('Sorry, image could not be loaded.');
+					};
+				}
+				else if (typeof layer.data == 'object') {
 					// Load actual image
 					if (layer.width == 0 || layer.width === null)
 						layer.width = layer.data.width;

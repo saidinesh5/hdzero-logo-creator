@@ -293,7 +293,7 @@ class File_open_class {
 
 		for (var i = 0, f; i < files.length; i++) {
 			f = files[i];
-			if (!f.type.match('image.*') && !f.name.match('.json')) {
+			if (!f.type.match('image.*') && !f.name.match('.json') && f.name != 'LOGO.ME') {
 				if(dir_opened == false) {
 					alertify.error('Wrong file type, must be image or json.');
 				}
@@ -307,15 +307,15 @@ class File_open_class {
 			FR.file = files[i];
 
 			FR.onload = function (event) {
-				if (this.file.type.match('image.*')) {
+				if (this.file.type.match('image.*') || f.name == 'LOGO.ME') {
 					var order = auto_increment + order_map[this.file.name];
 					//image
 					var new_layer = {
 						name: this.file.name,
 						type: 'image',
-						data: event.target.result,
+						data: f.name == 'LOGO.ME' ? new Uint8Array(event.target.result) : event.target.result,
 						order: order,
-						_exif: _this.extract_exif(this.file)
+						_exif: f.name == 'LOGO.ME' ? null :_this.extract_exif(this.file)
 					};
 					app.State.do_action(
 						new app.Actions.Bundle_action('open_image', 'Open Image', [
@@ -335,6 +335,8 @@ class File_open_class {
 				FR.readAsText(f);
 			else if (f.name.match('.json'))
 				FR.readAsText(f);
+			else if (f.name == 'LOGO.ME')
+				FR.readAsArrayBuffer(f);
 			else
 				FR.readAsDataURL(f);
 
@@ -367,7 +369,7 @@ class File_open_class {
 				FR.onload = function (event) {
 					if (this.file.type.match('image.*')
 						//below is fix for firefox, it has empty type
-						|| (this.file.type == '' && this.file.name.match(/\.(png|jpg|jpeg|webp|gif|avif)/g))) {
+						|| (this.file.type == '' && this.file.name.match(/(\.(png|jpg|jpeg|webp|gif|avif)|LOGO\.ME)/g))) {
 						//image
 						var new_layer = {
 							name: this.file.name,
