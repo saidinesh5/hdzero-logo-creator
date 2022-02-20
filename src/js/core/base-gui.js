@@ -135,7 +135,10 @@ class Base_gui_class {
 	}
 
 	render_main_gui() {
-		this.autodetect_dimensions();
+		//this.autodetect_dimensions();
+		config.width = 480
+		config.height = 240
+		config.autoresize_enabled = false;
 
 		this.change_theme();
 		this.prepare_canvas();

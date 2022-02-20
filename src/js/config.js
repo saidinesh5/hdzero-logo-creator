@@ -28,6 +28,9 @@ config.user_fonts = {};
 config.guides_enabled = true;
 config.guides = [];
 config.ruler_active = false;
+config.autoresize_enabled = true;
+config.autoresize_default_width = 480;
+config.autoresize_default_height = 240;
 
 //requires styles in reset.css
 config.themes = [

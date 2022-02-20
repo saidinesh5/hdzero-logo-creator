@@ -54,6 +54,10 @@ export class Autoresize_canvas_action extends Base_action {
 				new_config_height = parseInt(height);
 		}
 
+		if (!config.autoresize_enabled) {
+			new_config_width = config.autoresize_default_width;
+			new_config_height = config.autoresize_default_height;
+		}
 		if (new_config_width !== config.WIDTH || new_config_height !== height) {
 			this.old_config_width = config.WIDTH;
 			this.old_config_height = config.HEIGHT;
