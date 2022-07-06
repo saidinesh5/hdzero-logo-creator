@@ -84,9 +84,10 @@ export class Insert_layer_action extends Base_action {
 			}
 
 			if (layer.link == null) {
+				// HDZERO logo
 				if (layer.name == 'LOGO.ME') {
-					const w = 480;
-					const h = 240;
+					const w = 1280;
+					const h = 720;
 					const n = w * h;
 
 					let tmpCanvas = document.createElement('canvas');
@@ -97,11 +98,12 @@ export class Insert_layer_action extends Base_action {
 					tmpCanvas.height = h;
 
 					for (let i = 0; i < n; i++) {
-						const sourceIndex = 3*i;
+						const sourceIndex = 2*i;
 						const destinationIndex = 4*i;
-						imgData.data[destinationIndex] = layer.data[sourceIndex];
-						imgData.data[destinationIndex + 1] = layer.data[sourceIndex + 1];
-						imgData.data[destinationIndex + 2] = layer.data[sourceIndex + 2];
+						const bgr565le = (layer.data[sourceIndex + 1] << 8) | layer.data[sourceIndex];
+						imgData.data[destinationIndex] = Math.floor(((bgr565le & (2**5 - 1))/(2**5 - 1)) * 255);
+						imgData.data[destinationIndex + 1] = Math.floor((((bgr565le >> 5) & (2**6 - 1))/(2**6 - 1)) * 255);
+						imgData.data[destinationIndex + 2] = Math.floor((((bgr565le >> 11) & (2**5 - 1))/(2**5 - 1)) * 255);
 						imgData.data[destinationIndex + 3] = 255;
 					}
 
@@ -117,7 +119,7 @@ export class Insert_layer_action extends Base_action {
 						layer.height_original = h;
 						layer.data = null;
 						autoresize_as = [layer.width, layer.height, layer.id, this.can_automate, true];
-						config.need_render =true;
+						config.need_render = true;
 					}
 					layer.link.onerror = (error) => {
 						resolve(error);

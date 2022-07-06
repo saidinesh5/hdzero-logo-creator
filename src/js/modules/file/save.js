@@ -41,7 +41,7 @@ class File_save_class {
 			GIF: "Graphics Interchange Format",
 			BMP: "Windows Bitmap",
 			TIFF: "Tag Image File Format",
-			HDZERO_LOGO: "HDZero Logo (RGB24 data)"
+			HDZERO_LOGO: "HDZero Logo (BGR565LE)"
 		};
 
 		this.default_extension = 'PNG';
@@ -620,19 +620,22 @@ class File_save_class {
 			});
 		}
 		else if (type == 'HDZERO_LOGO') {
-			const imageData = ctx.getImageData(0, 0, 480, 240); // HDZero requires speicifc dimensions
-			const rgb24 = new Uint8Array((imageData.data.length / 4) * 3);
+			const imageData = ctx.getImageData(0, 0, 1280, 720); // HDZero requires speicifc dimensions
+			const bgr565le = new Uint8Array((imageData.data.length / 4) * 2);
 
 			var i = 0;
 			var j = 0;
 			while( i < imageData.data.length){
-				rgb24[j++] = imageData.data[i++];
-				rgb24[j++] = imageData.data[i++];
-				rgb24[j++] = imageData.data[i++];
-				i++;
+				const r = imageData.data[i++]/255.0;
+				const g = imageData.data[i++]/255.0;
+				const b = imageData.data[i++]/255.0;
+				const a = imageData.data[i++]/255.0;
+				const bgr565 = (Math.floor((2**5 - 1) * b << 11) | (Math.floor((2**6 - 1) * g) << 5) | (Math.floor((2**5 - 1) * r)));
+				bgr565le[j++] = bgr565 & 0xFF;
+				bgr565le[j++] = (bgr565 >> 8) & 0xFF;
 			}
 
-			var blob = new Blob([rgb24], {type: 'application/octet-stream'})
+			var blob = new Blob([bgr565le], {type: 'application/octet-stream'})
 
 			filesaver.saveAs(blob, 'LOGO.ME')
         }

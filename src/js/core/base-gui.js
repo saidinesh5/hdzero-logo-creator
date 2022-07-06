@@ -47,11 +47,10 @@ class Base_gui_class {
 
 		//common image dimensions
 		this.common_dimensions = [
-			[480, 240, 'HDZero Logo'],
 			[640, 480, '480p'],
 			[800, 600, 'SVGA'],
 			[1024, 768, 'XGA'],
-			[1280, 720, 'hdtv, 720p'],
+			[1280, 720, 'hdtv, 720p, HDZero Logo'],
 			[1600, 1200, 'UXGA'],
 			[1920, 1080, 'Full HD, 1080p'],
 			[3840, 2160, '4K UHD'],
@@ -136,8 +135,8 @@ class Base_gui_class {
 
 	render_main_gui() {
 		//this.autodetect_dimensions();
-		config.width = 480
-		config.height = 240
+		config.WIDTH = 1280
+		config.HEIGHT = 720
 		config.autoresize_enabled = false;
 
 		this.change_theme();
